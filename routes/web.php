@@ -2,21 +2,21 @@
 
 use Illuminate\Support\Facades\Route;
 
-// 1. Redirect
+// 1. ROUTE REDIRECT
 Route::redirect('/', '/home');
 Route::redirect('/beranda', '/home');
 
-// 2. Home Page
+// 2. ROUTE HOME
 Route::get('/home', function () {
     return view('home');
 })->name('home');
 
-// 3. About Page
+// 3. ROUTE ABOUT
 Route::get('/about', function () {
     return view('about');
 })->name('about');
 
-// 4. Program Group & Details
+// 4. ROUTE PROGRAM (Group & Parameter)
 Route::prefix('program')->name('program.')->group(function () {
     Route::get('/', function () {
         return view('program.index');
@@ -27,7 +27,7 @@ Route::prefix('program')->name('program.')->group(function () {
     })->name('detail');
 });
 
-// 5. Our Team Group & Member Profile
+// 5. ROUTE OUR TEAM (Group & Parameter)
 Route::prefix('our-team')->name('team.')->group(function () {
     Route::get('/', function () {
         return view('team.index');
@@ -42,12 +42,12 @@ Route::prefix('our-team')->name('team.')->group(function () {
     })->name('detail');
 });
 
-// 6. Contact Us Page
+// 6. ROUTE CONTACT US
 Route::get('/contact-us', function () {
     return view('contact');
 })->name('contact');
 
-// 7. Fallback Route (404 Page)
+// 7. ROUTE FALLBACK (404 Page)
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);
 });

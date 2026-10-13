@@ -7,9 +7,9 @@
     <h1 class="text-3xl font-bold text-white mb-4">Contact Enterprise Support</h1>
     <p class="text-slate-300 mb-6">Have inquiries about implementing SiteProgress on your construction project?</p>
     <div class="space-y-3 text-slate-300 text-sm">
-        <p><strong class="text-white">Email:</strong> support@siteprogress.com</p>
-        <p><strong class="text-white">Phone:</strong> +62 812-3456-7890</p>
-        <p><strong class="text-white">Office:</strong> BuildTech HQ, Industrial Estate Zone A</p>
+        <p><strong class="text-white">Email:</strong> tigaciptaselaras.com</p>
+        <p><strong class="text-white">Phone:</strong> +62 821-1263-5217</p>
+        <p><strong class="text-white">Office:</strong> Bekasi City, West Java</p>
     </div>
 </div>
 @endsection
