@@ -14,7 +14,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
             <div class="flex items-center gap-3">
                 <span class="bg-blue-600 text-white p-2 rounded-lg font-bold text-xl">SP</span>
-                <a href="{{ route('home') }}" class="text-xl font-bold text-white tracking-wide">SiteProgress</a>
+                <a href="{{ route('home') }}" class="text-xl font-bold text-white tracking-wide">Tiga Cipta Selaras</a>
             </div>
             <nav class="flex gap-6 font-medium text-sm text-slate-300">
                 <a href="{{ route('home') }}" class="hover:text-blue-400 transition-colors">Home</a>
