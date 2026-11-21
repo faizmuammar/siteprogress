@@ -1,195 +1,223 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard Monitoring Proyek - SiteProgress')
+@section('title', 'Home Dashboard - SiteProgress')
 
 @section('content')
-<div class="space-y-10">
+@php
+    $role = session('user_role', 'owner_proyek');
+@endphp
 
-    {{-- 1. HERO BANNER DENGAN VISUAL GAMBAR PROYEK (OPSI C) & COLOR GRADIENT (OPSI B) --}}
-    <div class="relative overflow-hidden rounded-3xl border border-slate-700/70 bg-slate-900 shadow-2xl">
-        {{-- Background Image dengan Dark Overlay --}}
-        <div class="absolute inset-0 z-0 opacity-25 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1541888946425-d0fbb186a5b7?auto=format&fit=crop&w=1600&q=80');"></div>
-        <div class="absolute inset-0 z-0 bg-gradient-to-r from-slate-950 via-slate-900/90 to-blue-950/70"></div>
+<div class="space-y-8">
 
-        <div class="relative z-10 p-6 md:p-10">
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
-                <div class="space-y-3">
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-600/30 text-blue-400 border border-blue-500/40">
-                            PT Tiga Cipta Selaras
-                        </span>
-                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-700/60 flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> System Operational
-                        </span>
-                    </div>
-                    <h1 class="text-3xl md:text-5xl font-black text-white tracking-tight">
-                        SiteProgress Enterprise
-                    </h1>
-                    <p class="text-slate-300 text-sm md:text-base max-w-2xl leading-relaxed">
-                        Sistem kendali dan pemantauan real-time pembangunan infrastruktur pabrik, pergudangan, serta fasilitas industri nasional.
-                    </p>
-                </div>
-                
-                <div class="flex items-center gap-3 shrink-0">
-                    <a href="{{ route('program.index') }}" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-6 py-3.5 rounded-xl shadow-lg shadow-blue-600/30 transition-all text-center border border-blue-400/30">
-                        Eksplorasi Modul Proyek &rarr;
-                    </a>
-                </div>
-            </div>
-
-            {{-- Metric Cards (Opsi B - Layout & Warna) --}}
-            @php
-                $stats = [
-                    ['label' => 'Total Proyek Aktif', 'value' => '8 Situs', 'sub' => 'Jawa & Sumatera', 'icon' => '🏗️', 'color' => 'text-blue-400'],
-                    ['label' => 'Rata-Rata Progres S-Curve', 'value' => '74.8%', 'sub' => '+3.2% Minggu Ini', 'icon' => '📈', 'color' => 'text-emerald-400'],
-                    ['label' => 'Tenaga Kerja Lapangan', 'value' => '342 Orang', 'sub' => 'Presensi Terverifikasi', 'icon' => '👷‍♂️', 'color' => 'text-amber-400'],
-                    ['label' => 'Insiden K3 (HSE)', 'value' => '0 Case', 'sub' => 'Zero Incident Target', 'icon' => '🛡️', 'color' => 'text-indigo-400'],
-                ];
-            @endphp
-
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-6 border-t border-slate-700/60">
-                @foreach($stats as $stat)
-                    <div class="bg-slate-900/80 backdrop-blur border border-slate-700/60 rounded-2xl p-4 hover:border-blue-500/40 transition-all">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs text-slate-400 font-medium">{{ $stat['label'] }}</span>
-                            <span class="text-lg">{{ $stat['icon'] }}</span>
-                        </div>
-                        <p class="text-2xl font-black text-white mb-0.5">{{ $stat['value'] }}</p>
-                        <p class="text-[11px] {{ $stat['color'] }} font-semibold">{{ $stat['sub'] }}</p>
-                    </div>
-                @endforeach
-            </div>
+    {{-- SWITCH ROLE BANNER DEMO --}}
+    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <span class="text-xs text-slate-400 font-medium">Aktor Aktif:</span>
+            @if($role == 'owner_proyek')
+                <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-950 text-blue-400 border border-blue-800">👤 Owner Proyek (Klien)</span>
+            @elseif($role == 'owner_tcs')
+                <span class="px-3 py-1 rounded-full text-xs font-bold bg-purple-950 text-purple-400 border border-purple-800">🏢 Pemilik PT TCS (Executive)</span>
+            @else
+                <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-950 text-amber-400 border border-amber-800">👷‍♂️ PIC / Site Supervisor</span>
+            @endif
         </div>
+        <a href="{{ route('logout') }}" class="text-xs text-rose-400 hover:text-rose-300 font-semibold transition-colors">
+            Ganti Aktor / Logout
+        </a>
     </div>
 
-    {{-- 2. DAFTAR PROYEK MONITORING REAL-TIME (OPSI B & C - STATUS CARDS WITH PROGRESS BAR) --}}
-    <div class="space-y-5">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div>
-                <h2 class="text-2xl font-bold text-white tracking-tight">Status Proyek Konstruksi Berjalan</h2>
-                <p class="text-slate-400 text-sm">Update log progres harian langsung dari Site Manager di lapangan</p>
+    {{-- ========================================================================= --}}
+    {{-- VIEW 1: OWNER PROYEK (KLIEN) --}}
+    {{-- ========================================================================= --}}
+    @if($role == 'owner_proyek')
+        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-blue-950/80 border border-slate-700/80 rounded-3xl p-6 md:p-8 shadow-xl">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                <div>
+                    <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Proyek Anda</span>
+                    <h1 class="text-3xl font-extrabold text-white mt-1">{{ $myProject->title ?? 'Pembangunan Pabrik Manufaktur Zonal A' }}</h1>
+                    <p class="text-xs text-slate-400 mt-1">📍 {{ $myProject->location ?? 'Kawasan Industri Cikarang' }} | Kontraktor: PT Tiga Cipta Selaras</p>
+                </div>
+                <span class="px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">
+                    ● {{ $myProject->status ?? 'Dalam Pengerjaan' }}
+                </span>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-700/60">
+                <div class="bg-slate-900/80 border border-slate-700/50 rounded-xl p-4">
+                    <p class="text-xs text-slate-400 mb-1">Capaian Progres</p>
+                    <p class="text-2xl font-black text-blue-400">{{ $myProject->progress_percentage ?? '82.5' }}%</p>
+                    <p class="text-[11px] text-emerald-400 font-semibold mt-1">+2.1% minggu ini</p>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-700/50 rounded-xl p-4">
+                    <p class="text-xs text-slate-400 mb-1">Pekerja Hadir Hari Ini</p>
+                    <p class="text-2xl font-black text-emerald-400">{{ $todayAttendance->total_workers_present ?? 48 }} / 50</p>
+                    <p class="text-[11px] text-slate-400 mt-1">Presensi Terverifikasi</p>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-700/50 rounded-xl p-4">
+                    <p class="text-xs text-slate-400 mb-1">Target Selesai</p>
+                    <p class="text-2xl font-black text-amber-400">{{ $myProject->target_completion_date ?? '15 Des 2026' }}</p>
+                    <p class="text-[11px] text-slate-400 mt-1">Sesuai Schedule</p>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-700/50 rounded-xl p-4">
+                    <p class="text-xs text-slate-400 mb-1">Laporan Terakhir</p>
+                    <p class="text-2xl font-black text-indigo-400">Hari Ini</p>
+                    <p class="text-[11px] text-slate-400 mt-1">Pengecoran Zona 2</p>
+                </div>
             </div>
         </div>
-
-        @php
-            $projects = [
-                [
-                    'code' => 'PRJ-TCS-001',
-                    'title' => 'Pembangunan Pabrik Manufaktur Zonal A',
-                    'location' => 'Kawasan Industri Cikarang',
-                    'progress' => 82,
-                    'status' => 'On Track',
-                    'manager' => 'Ir. Hendra Gunawan',
-                    'img' => 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80'
-                ],
-                [
-                    'code' => 'PRJ-TCS-002',
-                    'title' => 'Gudang Logistik & Depo Kontainer',
-                    'location' => 'Pelabuhan Tanjung Priok',
-                    'progress' => 65,
-                    'status' => 'Delayed',
-                    'manager' => 'Budi Santoso, ST',
-                    'img' => 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80'
-                ],
-                [
-                    'code' => 'PRJ-TCS-003',
-                    'title' => 'Fasilitas Pengolahan Limbah & Utilitas',
-                    'location' => 'Kawasan Industri Karawang',
-                    'progress' => 95,
-                    'status' => 'Final Stage',
-                    'manager' => 'Ahmad Faiz Muammar',
-                    'img' => 'https://images.unsplash.com/photo-1590496793929-36417d3117de?auto=format&fit=crop&w=600&q=80'
-                ],
-            ];
-        @endphp
 
         <div class="grid md:grid-cols-3 gap-6">
-            @forelse($projects as $item)
-                <div class="bg-slate-800/90 border border-slate-700/80 rounded-2xl overflow-hidden hover:border-blue-500/60 transition-all duration-300 flex flex-col justify-between group shadow-lg">
-                    {{-- Visual Gambar Proyek --}}
-                    <div class="relative h-44 overflow-hidden">
-                        <img src="{{ $item['img'] }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/30 to-transparent"></div>
-                        
-                        <div class="absolute top-3 left-3 right-3 flex justify-between items-center">
-                            <span class="text-[11px] font-mono font-bold text-slate-200 bg-slate-950/80 px-2.5 py-1 rounded-lg border border-slate-700 backdrop-blur">
-                                {{ $item['code'] }}
+            {{-- Update Pembangunan Hari Ini --}}
+            <div class="md:col-span-2 bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-white">Update Pembangunan Hari Ini</h3>
+                    <span class="text-xs text-slate-400">{{ date('d M Y') }}</span>
+                </div>
+                <div class="space-y-3">
+                    @forelse($latestReports as $report)
+                        <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700/60 flex items-start gap-4">
+                            <span class="text-2xl">🏗️</span>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">Laporan Tanggal {{ $report->report_date }}</h4>
+                                <p class="text-xs text-slate-400 mt-1">{{ $report->notes }}</p>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700/60 flex items-start gap-4">
+                            <span class="text-2xl">🏗️</span>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">Pengecoran Struktur Beton Zona A2</h4>
+                                <p class="text-xs text-slate-400 mt-1">Tim lapangan telah menyelesaikan volume 120m³ cor beton ready-mix. Pengeringan diperkirakan 48 jam.</p>
+                            </div>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+
+            {{-- To Do List & Milestone --}}
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-4">
+                <h3 class="text-lg font-bold text-white">To-Do & Milestone Proyek</h3>
+                <div class="space-y-3 text-xs">
+                    @forelse($todos as $todo)
+                        <div class="flex items-center justify-between p-3 bg-slate-900 rounded-xl border border-slate-700">
+                            <span class="{{ $todo->is_completed ? 'line-through text-slate-500' : 'text-white font-semibold' }}">
+                                {{ $todo->task_name }}
                             </span>
-
-                            @switch($item['status'])
-                                @case('On Track')
-                                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-950/90 text-emerald-400 border border-emerald-700/80 backdrop-blur">On Track</span>
-                                    @break
-                                @case('Delayed')
-                                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-rose-950/90 text-rose-400 border border-rose-700/80 backdrop-blur">Terhambat</span>
-                                    @break
-                                @default
-                                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-blue-950/90 text-blue-400 border border-blue-700/80 backdrop-blur">Tahap Akhir</span>
-                            @endswitch
+                            <span class="text-[10px] px-2 py-0.5 rounded {{ $todo->is_completed ? 'bg-emerald-950 text-emerald-400' : 'bg-blue-950 text-blue-400' }}">
+                                {{ $todo->is_completed ? 'Selesai' : 'Proses' }}
+                            </span>
                         </div>
+                    @empty
+                        <div class="p-3 bg-slate-900 rounded-xl border border-slate-700 text-slate-400">
+                            Pemasangan Atap ZincAlum (Sedang Berjalan)
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
 
-                        <div class="absolute bottom-3 left-3 right-3">
-                            <h3 class="text-base font-bold text-white line-clamp-1 group-hover:text-blue-400 transition-colors">{{ $item['title'] }}</h3>
-                            <p class="text-xs text-slate-300 flex items-center gap-1 mt-0.5">
-                                📍 {{ $item['location'] }}
-                            </p>
+    {{-- ========================================================================= --}}
+    {{-- VIEW 2: PEMILIK TIGA CIPTA SELARAS (EXECUTIVE VIEW) --}}
+    {{-- ========================================================================= --}}
+    @elseif($role == 'owner_tcs')
+        <div class="space-y-6">
+            <div>
+                <h1 class="text-3xl font-extrabold text-white">Executive Control Dashboard</h1>
+                <p class="text-slate-400 text-sm">Ringkasan seluruh situs proyek aktif PT Tiga Cipta Selaras</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                @forelse($projects as $proj)
+                    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs font-bold text-blue-400 bg-blue-950 px-2.5 py-1 rounded">{{ $proj->code }}</span>
+                            <span class="text-xs bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-800">{{ $proj->status }}</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-1">{{ $proj->title }}</h3>
+                        <p class="text-xs text-slate-400 mb-4">Klien: {{ $proj->client_name }}</p>
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-400">Progres:</span>
+                                <span class="text-blue-400 font-bold">{{ $proj->progress_percentage }}%</span>
+                            </div>
+                            <div class="w-full bg-slate-900 rounded-full h-2">
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: {{ $proj->progress_percentage }}%"></div>
+                            </div>
                         </div>
                     </div>
-
-                    {{-- Isi Kartu & Progress Bar --}}
-                    <div class="p-5 space-y-4">
-                        <div class="space-y-1.5">
-                            <div class="flex justify-between text-xs font-semibold">
-                                <span class="text-slate-400">Capaian Progres Fisik</span>
-                                <span class="text-blue-400 font-bold">{{ $item['progress'] }}%</span>
-                            </div>
-                            <div class="w-full bg-slate-900 rounded-full h-2.5 overflow-hidden border border-slate-700/80">
-                                <div class="bg-gradient-to-r from-blue-600 to-cyan-400 h-2.5 rounded-full transition-all duration-500" style="width: {{ $item['progress'] }}%"></div>
-                            </div>
-                        </div>
-
-                        <div class="pt-3 border-t border-slate-700/60 flex items-center justify-between text-xs text-slate-400">
-                            <span>PIC Proyek:</span>
-                            <strong class="text-slate-200 font-semibold">{{ $item['manager'] }}</strong>
-                        </div>
+                @empty
+                    <div class="col-span-3 bg-slate-800 border border-slate-700 rounded-2xl p-6 text-center text-slate-400 text-sm">
+                        Belum ada data proyek di database. Silakan tambahkan data proyek melalui menu Program.
                     </div>
-                </div>
-            @empty
-                <div class="col-span-3 text-center py-10 bg-slate-800 rounded-2xl border border-slate-700 text-slate-400">
-                    Belum ada data proyek yang terdaftar.
-                </div>
-            @endforelse
+                @endforelse
+            </div>
         </div>
-    </div>
 
-    {{-- 3. FITUR OPERASIONAL & MENU PINTAS LOGISTIK (OPSI B) --}}
-    <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 md:p-8">
-        <h3 class="text-xl font-bold text-white mb-2">Fitur Operasional Monitoring</h3>
-        <p class="text-slate-400 text-sm mb-6">Akses cepat ke setiap modul operasional SiteProgress</p>
+    {{-- ========================================================================= --}}
+    {{-- VIEW 3: PIC LAPANGAN / SITE SUPERVISOR --}}
+    {{-- ========================================================================= --}}
+    @else
+        <div class="space-y-6">
+            @if(session('success'))
+                <div class="p-4 rounded-xl bg-emerald-950 border border-emerald-700 text-emerald-300 text-xs font-semibold">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <a href="{{ route('program.detail', 'industrial') }}" class="p-5 bg-slate-900/90 hover:bg-slate-900 border border-slate-700/70 hover:border-blue-500/50 rounded-xl transition-all group">
-                <span class="text-3xl mb-3 block">🏗️</span>
-                <h4 class="font-bold text-white text-sm group-hover:text-blue-400 transition-colors">Log Progres Pabrik</h4>
-                <p class="text-xs text-slate-400 mt-1">Struktur baja, cor beton, & zonasi</p>
-            </a>
-            <a href="{{ route('program.detail', 'warehouse') }}" class="p-5 bg-slate-900/90 hover:bg-slate-900 border border-slate-700/70 hover:border-blue-500/50 rounded-xl transition-all group">
-                <span class="text-3xl mb-3 block">🚛</span>
-                <h4 class="font-bold text-white text-sm group-hover:text-blue-400 transition-colors">Alat Berat & Material</h4>
-                <p class="text-xs text-slate-400 mt-1">Excavator, crane, & supply barang</p>
-            </a>
-            <a href="{{ route('team.index') }}" class="p-5 bg-slate-900/90 hover:bg-slate-900 border border-slate-700/70 hover:border-blue-500/50 rounded-xl transition-all group">
-                <span class="text-3xl mb-3 block">👷‍♂️</span>
-                <h4 class="font-bold text-white text-sm group-hover:text-blue-400 transition-colors">Tim Pengembang</h4>
-                <p class="text-xs text-slate-400 mt-1">Profil tim Syntax Builders</p>
-            </a>
-            <a href="{{ route('contact') }}" class="p-5 bg-slate-900/90 hover:bg-slate-900 border border-slate-700/70 hover:border-blue-500/50 rounded-xl transition-all group">
-                <span class="text-3xl mb-3 block">📞</span>
-                <h4 class="font-bold text-white text-sm group-hover:text-blue-400 transition-colors">Pusat Bantuan</h4>
-                <p class="text-xs text-slate-400 mt-1">Kontak support SiteProgress</p>
-            </a>
+            <div>
+                <h1 class="text-3xl font-extrabold text-white">Portal Input Lapangan (PIC)</h1>
+                <p class="text-slate-400 text-sm">Site: {{ $myProject->title ?? 'Pabrik Manufaktur Zonal A' }}</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                {{-- Form Presensi Tukang --}}
+                <form action="{{ route('attendance.store') }}" method="POST" class="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-4">
+                    @csrf
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span>👷‍♂️</span> Presensi Pekerja Hari Ini
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center text-xs text-slate-300">
+                            <span>Tukang Kayu/Batu:</span>
+                            <input type="number" name="carpenter_mason_count" value="20" class="w-20 bg-slate-900 border border-slate-700 rounded p-1.5 text-right text-white">
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-slate-300">
+                            <span>Tukang Besi/Las:</span>
+                            <input type="number" name="welder_ironworker_count" value="15" class="w-20 bg-slate-900 border border-slate-700 rounded p-1.5 text-right text-white">
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-slate-300">
+                            <span>Operator Alat Berat:</span>
+                            <input type="number" name="heavy_equipment_operator_count" value="5" class="w-20 bg-slate-900 border border-slate-700 rounded p-1.5 text-right text-white">
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all">
+                            Simpan Presensi ke Database
+                        </button>
+                    </div>
+                </form>
+
+                {{-- Form Upload Dokumen & Foto Lapangan --}}
+                <form action="{{ route('report.store') }}" method="POST" enctype="multipart/form-data" class="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-4">
+                    @csrf
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span>📸</span> Upload Laporan & Foto Lapangan
+                    </h3>
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="text-slate-400 block mb-1">Catatan Progress Harian</label>
+                            <textarea name="notes" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white" rows="2" placeholder="Tuliskan pengerjaan hari ini..."></textarea>
+                        </div>
+                        <div>
+                            <label class="text-slate-400 block mb-1">Foto Bukti Lapangan (Geotagged)</label>
+                            <input type="file" name="geotagged_photo" class="w-full text-slate-400 bg-slate-900 border border-slate-700 rounded-xl p-2">
+                        </div>
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all">
+                            Kirim Laporan ke Database
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
+    @endif
 
 </div>
 @endsection
